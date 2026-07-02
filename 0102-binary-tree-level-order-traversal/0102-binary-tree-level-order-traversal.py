@@ -15,11 +15,10 @@ class Solution:
             sze = len(que)
             for _ in range(sze):
                 node  = que.popleft()
-                if(node is not None):
-                    level.append(node.val)
-                if(node is not None and node.left):
+                level.append(node.val)
+                if(node.left):
                     que.append(node.left)
-                if(node is not None and node.right):
+                if(node.right):
                     que.append(node.right)
                 # now add in level in ans
             ans.append(level)
