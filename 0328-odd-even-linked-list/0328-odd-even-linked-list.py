@@ -9,10 +9,10 @@ class Solution:
             return head
         oddh=head
         odd=head
-        evenh=odd.next
+        evenh=head.next
         even=evenh
         while(even!=None and even.next!=None):
-            odd.next=odd.next.next
+            odd.next=odd.next.next # updates odd first because 
             odd = odd.next
             even.next=even.next.next # points to next'even
             even = even.next # reach to that node
