@@ -17,7 +17,7 @@ class Solution:
             return p
         curr = head
         dummy=ListNode(-100)
-        dummy.next=head
+        # dummy.next=head
         prevGroupEnd=dummy
         while(curr is not None):
             groupStart = curr
