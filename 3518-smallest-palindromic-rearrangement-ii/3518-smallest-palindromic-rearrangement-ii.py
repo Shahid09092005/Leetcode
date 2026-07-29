@@ -1,86 +1,66 @@
+
 class Solution:
     def smallestPalindrome(self, s: str, k: int) -> str:
+        # count each character freq
+        freq = {}
+        for x in s:
+            freq[x] = freq.get(x,0)+1
 
-        freq = [0] * 26
-
-        for ch in s:
-            freq[ord(ch)-97] += 1
-
-        half = [x // 2 for x in freq]
-
+        # Half counts and middle character(only one in s)
+        halffreq = {}
         middle = ""
 
-        for i in range(26):
-            if freq[i] % 2:
-                middle = chr(i + 97)
+        for ch in sorted(freq):
+            halffreq[ch] = (int)(freq[ch]//2)
+            if freq[ch] % 2:
+                middle = ch
 
+        # pre-compute factorials till all the no. of char
+        total_half = sum(halffreq.values())
+        fact = [1] * (total_half + 1)
+        for i in range(1, total_half + 1):
+            fact[i] = fact[i - 1] * i
 
-        n = sum(half)
+        # Count distinct permutations of remaining
+        def count_perm(halffreq):
+            rem = sum(halffreq.values())
+            ways = 1
 
-        # log factorial
-        import math
+            for v in halffreq.values():
+                if v:
+                    ways *= comb(rem, v)
+                    rem -= v
 
-        logfact = [0] * (n + 1)
+                    # no need to know numbers larger than k
+                    if ways >= k:
+                        return k
 
-        for i in range(1, n + 1):
-            logfact[i] = logfact[i-1] + math.log(i)
+            return ways
 
-
-        def count_perm():
-
-            total = sum(half)
-
-            # log(n! / a!b!c!)
-            logways = logfact[total]
-
-            for x in half:
-                logways -= logfact[x]
-
-            # if answer is definitely larger than k
-            if logways > math.log(k):
-                return k
-
-            # here result is small, calculate exactly
-            ans = math.factorial(total)
-
-            for x in half:
-                ans //= math.factorial(x)
-
-            return ans
-
-
-        if count_perm() < k:
+        # Not enough palindromes
+        if count_perm(halffreq) < k:
             return ""
 
+        left_half = []
 
-        left = []
 
-        remaining = n
+        while sum(halffreq.values()) > 0:
 
-        while remaining:
+            for ch in sorted(halffreq): # goes a to z
 
-            for i in range(26):
-
-                if half[i] == 0:
+                if halffreq[ch] == 0:
                     continue
 
-                half[i] -= 1
-                remaining -= 1
+                halffreq[ch] -= 1
 
-
-                ways = count_perm()
-
+                ways = count_perm(halffreq)
 
                 if ways >= k:
-                    left.append(chr(i + 97))
+                    left_half.append(ch)
                     break
-
                 else:
                     k -= ways
-                    half[i] += 1
-                    remaining += 1
+                    halffreq[ch] += 1       
 
-
-        left = "".join(left)
-
-        return left + middle + left[::-1]
+        leftpart = "".join(left_half)
+        return leftpart + middle + leftpart[::-1]
