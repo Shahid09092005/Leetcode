@@ -1,4 +1,3 @@
-
 class Solution:
     def smallestPalindrome(self, s: str, k: int) -> str:
         # count each character freq
@@ -12,23 +11,19 @@ class Solution:
 
         for ch in sorted(freq):
             halffreq[ch] = (int)(freq[ch]//2)
-            if freq[ch] % 2:
+            if freq[ch] % 2==1:
                 middle = ch
 
-        # pre-compute factorials till all the no. of char
-        total_half = sum(halffreq.values())
-        fact = [1] * (total_half + 1)
-        for i in range(1, total_half + 1):
-            fact[i] = fact[i - 1] * i
 
         # Count distinct permutations of remaining
         def count_perm(halffreq):
-            rem = sum(halffreq.values())
+            rem = sum(halffreq.values()) 
+            # a-1,b-1,c-1
             ways = 1
 
             for v in halffreq.values():
                 if v:
-                    ways *= comb(rem, v)
+                    ways *= comb(rem, v) # build in module , to cal, combin. (3,)
                     rem -= v
 
                     # no need to know numbers larger than k
